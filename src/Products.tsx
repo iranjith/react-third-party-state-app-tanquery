@@ -2,13 +2,15 @@ import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import PageNotFound from "./PageNotFound";
 import { Product } from "./types/types";
-import { useGetProducts } from "./queries/productQueries";
+import { useDeleteProduct, useGetProducts } from "./queries/productQueries";
 
 export default function Products() {
   const [size, setSize] = useState("");
   const { category } = useParams();
 
   const { data: products } = useGetProducts(category);
+
+  const deleteProduct = useDeleteProduct(category);
 
   function renderProduct(p: Product) {
     return (
@@ -18,6 +20,7 @@ export default function Products() {
           <h3>{p.name}</h3>
           <p>${p.price}</p>
         </Link>
+        <button onClick={() => deleteProduct.mutate(p.id)}>Delete Shoe</button>
       </div>
     );
   }
