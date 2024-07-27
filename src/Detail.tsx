@@ -5,28 +5,14 @@ import PageNotFound from "./PageNotFound";
 import { useCart } from "./context/cartContext";
 import toast from "react-hot-toast";
 import { useQuery } from "@tanstack/react-query";
+import { useGetProductById } from "./queries/productQueries";
 
 export default function Detail() {
   const { setCart } = useCart();
   const { id } = useParams();
   const [sku, setSku] = useState("");
 
-  const {
-    data: product,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["products", id],
-    queryFn: async () => {
-      const data = await fetch(
-        import.meta.env.VITE_APP_API_BASE_URL + `products/${id}`
-      );
-      if (!data.ok) {
-        throw new Error(`Product not found: ${data.status}`);
-      }
-      return await data.json();
-    },
-  });
+  const { data: product, isLoading, error } = useGetProductById(id);
 
   if (isLoading) return <Spinner />;
   if (!product || !id) return <PageNotFound />;

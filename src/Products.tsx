@@ -1,30 +1,15 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Spinner from "./Spinner";
 import { useParams, Link } from "react-router-dom";
 import PageNotFound from "./PageNotFound";
 import { Product } from "./types/types";
-import { useQuery } from "@tanstack/react-query";
+import { useGetProducts } from "./queries/productQueries";
 
 export default function Products() {
   const [size, setSize] = useState("");
   const { category } = useParams();
 
-  const {
-    data: products,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["products"],
-    queryFn: async () => {
-      const data = await fetch(
-        import.meta.env.VITE_APP_API_BASE_URL + "products"
-      );
-      if (!data.ok) {
-        throw new Error(`Product not found: ${data.status}`);
-      }
-      return await data.json();
-    },
-  });
+  const { data: products, isLoading, error } = useGetProducts(category);
 
   function renderProduct(p: Product) {
     return (
