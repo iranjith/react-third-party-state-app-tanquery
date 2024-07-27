@@ -1,40 +1,34 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import Spinner from "./Spinner";
 import PageNotFound from "./PageNotFound";
 import { useCart } from "./context/cartContext";
-import { Product } from "./types/types";
 import toast from "react-hot-toast";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Detail() {
   const { setCart } = useCart();
   const { id } = useParams();
   const [sku, setSku] = useState("");
-  const [product, setProduct] = useState<Product | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const data = await fetch(
-          import.meta.env.VITE_APP_API_BASE_URL + `products/${id}`
-        );
-        if (!data.ok) {
-          throw new Error(`Product not found: ${data.status}`);
-        }
-        const product = await data.json();
-        setProduct(product);
-      } catch (error) {
-        setError(error as Error);
-      } finally {
-        setLoading(false);
+  const {
+    data: product,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["products", id],
+    queryFn: async () => {
+      const data = await fetch(
+        import.meta.env.VITE_APP_API_BASE_URL + `products/${id}`
+      );
+      if (!data.ok) {
+        throw new Error(`Product not found: ${data.status}`);
       }
-    }
-    fetchData();
-  }, [id]);
+      return await data.json();
+    },
+  });
 
-  if (loading) return <Spinner />;
+  if (isLoading) return <Spinner />;
   if (!product || !id) return <PageNotFound />;
   if (error) throw error;
 
