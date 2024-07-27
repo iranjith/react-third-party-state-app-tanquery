@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Spinner from "./Spinner";
 import { useParams, Link } from "react-router-dom";
 import PageNotFound from "./PageNotFound";
 import { Product } from "./types/types";
@@ -9,7 +8,7 @@ export default function Products() {
   const [size, setSize] = useState("");
   const { category } = useParams();
 
-  const { data: products, isLoading } = useGetProducts(category);
+  const { data: products } = useGetProducts(category);
 
   function renderProduct(p: Product) {
     return (
@@ -23,7 +22,6 @@ export default function Products() {
     );
   }
 
-  if (isLoading) return <Spinner />;
   if (!products || products.length === 0) return <PageNotFound />;
 
   const filteredProducts = size

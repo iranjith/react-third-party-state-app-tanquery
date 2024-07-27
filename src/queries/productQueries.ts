@@ -1,8 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 
 export function useGetProductById(id: string | undefined) {
-  return useQuery({
-    enabled: !!id,
+  return useSuspenseQuery({
     queryKey: ["products", id],
     queryFn: async () => {
       const data = await fetch(
@@ -17,8 +16,7 @@ export function useGetProductById(id: string | undefined) {
 }
 
 export function useGetProducts(category: string | undefined) {
-  return useQuery({
-    enabled: !!category,
+  return useSuspenseQuery({
     queryKey: ["products", category],
     queryFn: async () => {
       const data = await fetch(
