@@ -4,7 +4,6 @@ import Spinner from "./Spinner";
 import PageNotFound from "./PageNotFound";
 import { useCart } from "./context/cartContext";
 import toast from "react-hot-toast";
-import { useQuery } from "@tanstack/react-query";
 import { useGetProductById } from "./queries/productQueries";
 
 export default function Detail() {
@@ -12,11 +11,10 @@ export default function Detail() {
   const { id } = useParams();
   const [sku, setSku] = useState("");
 
-  const { data: product, isLoading, error } = useGetProductById(id);
+  const { data: product, isLoading } = useGetProductById(id);
 
   if (isLoading) return <Spinner />;
   if (!product || !id) return <PageNotFound />;
-  if (error) throw error;
 
   return (
     <div id="detail">

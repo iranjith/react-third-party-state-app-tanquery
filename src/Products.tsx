@@ -9,7 +9,7 @@ export default function Products() {
   const [size, setSize] = useState("");
   const { category } = useParams();
 
-  const { data: products, isLoading, error } = useGetProducts(category);
+  const { data: products, isLoading } = useGetProducts(category);
 
   function renderProduct(p: Product) {
     return (
@@ -23,7 +23,6 @@ export default function Products() {
     );
   }
 
-  if (error) throw error;
   if (isLoading) return <Spinner />;
   if (!products || products.length === 0) return <PageNotFound />;
 
